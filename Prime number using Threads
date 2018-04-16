@@ -2,7 +2,7 @@
 #include<unistd.h>
 #include<stdlib.h>
 #include<string.h>
-#include<pthread.h>
+#include<pthread.h>                                                       //Header File Used For Using Threads In Program
 pthread_mutex_t lock;                                                     //Mutex Is Used For Removing Race Condition
 int n;                                                                    //Shared Variable
 void *getuserinput();                                                     //Function Used For Taking User's Input
