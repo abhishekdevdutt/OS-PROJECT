@@ -2,47 +2,58 @@
 #include<unistd.h>
 #include<stdlib.h>
 #include<string.h>
-#include<pthread.h>                                                       //Header File Used For Using Threads In Program
-pthread_mutex_t lock;                                                     //Mutex Is Used For Removing Race Condition
-int n;                                                                    //Shared Variable
-void *getuserinput();                                                     //Function Used For Taking User's Input
-void *showprimenumber();                                                  //Function F'or Showing The Output
+#include<pthread.h>
+pthread_mutex_t lock;
+int n;
+void *getuserinput();
+void *showprimenumber();
 int main()
-  {
-	  pthread_mutex_init(&lock,NULL);
-	  pthread_t a_thread;                                                   //Thread Declaration
-	  pthread_t b_thread;                                                   //Thread Declaration
-	  pthread_create(&a_thread,NULL,getuserinput,NULL);                     //Thread Creation
-	  pthread_create(&b_thread,NULL,showprimenumber,NULL);                  //Thread Creation
-	  pthread_join(a_thread,NULL);                                          //Thread Joining
-	  pthread_join(b_thread,NULL);                                          //Thread Joining
-	  return 0;
-  }
+{
+	pthread_mutex_init(&lock,NULL);
+	pthread_t a_thread;
+	pthread_t b_thread;
+//	void *thread_result;
+	pthread_create(&a_thread,NULL,getuserinput,NULL);
+	pthread_create(&b_thread,NULL,showprimenumber,NULL);
+	pthread_join(a_thread,NULL);
+	pthread_join(b_thread,NULL);
+	return 0;
+}
 void *getuserinput()
-  {
+{
     pthread_mutex_lock(&lock);
-    printf("Enter the number : ");                                        //Taking User Input
-    scanf("%d",&n);
-    pthread_mutex_unlock(&lock);
-  }
+printf("Enter the number : ");
+scanf("%d",&n);
+pthread_mutex_unlock(&lock);
+}
+
+
 void *showprimenumber()
-  {	
-    int i,j,counter;
+{	int i,j,counter;
     pthread_mutex_lock(&lock);
-	  printf("\nALL THE PRIME NUMBERS LESS THAN OR EQUALS TO %d are following : ",n);
-    for(i = 2; i <= n; i++)                                               //Loop For Printing Prime Numbers
-	    {
+    if(n>=2)
+    {
+	
+	printf("\nALL THE PRIME NUMBERS LESS THAN OR EQUALS TO %d are following : ",n);
+    for(i = 2; i <= n; i++)
+	{
         counter=0;
         for(j = 2; j <= i/2; j++)
-		      {
-            if(i % j == 0)
-              {
-                counter = 1;
-                break;
-              }
-           }
+		{
+             if(i % j == 0){
+                 counter = 1;
+                 break;
+             }
+        }
+
         if(counter==0 && n!= 1)
-        printf("%d ",i);
-       }
+            printf("\n%d ",i);
+    }
+}
+else
+{
+	printf("Entered number is less than 2. The smallest prime number is 2...");
+}
     pthread_mutex_unlock(&lock);
-  }
+}
+
